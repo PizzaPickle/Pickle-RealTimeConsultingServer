@@ -10,10 +10,10 @@ html(lang="en")
             h1 PICKLE
         main 
             div#welcome
-                form(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                div(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
                     h4 테스트를 위해 userId를 입력하는 폼
-                    input(placeholder="userId", required, type="text")
-                    button Show RoomList
+                    input#pickleUserInput(placeholder="userId", required, type="text")
+                    button#showRoomList Show RoomList
             div#roomList(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
                 h4 userId를 입력하면, user가 입장할 수 있는 룸을 보여주는 곳
             div#call(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
@@ -27,4 +27,6 @@ html(lang="en")
                     button#camera Turn Camera Off
                     select#cameras
                     button#shareScreen Share Screen
-    script(src="/public/js/app.js") 
+    script(src="/socket.io/socket.io.js")                    
+    script(src="/public/js/app.js")
+      
