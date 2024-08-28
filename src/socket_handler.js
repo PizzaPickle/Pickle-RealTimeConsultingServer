@@ -1,11 +1,25 @@
 import SocketIO from 'socket.io';
-import { redisTest } from './redis_client';
+import { getRoomList } from './redis_client';
+
 function socketHandler(server) {
   console.log('소켓 핸들러 함수 시작');
+
   const wsServer = SocketIO(server);
+
   wsServer.on('connection', (socket) => {
     console.log('소켓 연결됨');
-    handleRedisTest();
+
+    socket.on('requestRoomList', async ({ userId }) => {
+      try {
+        const roomList = await getRoomList(userId);
+        socket.emit('receiveRoomList', roomList);
+
+        socket.disconnect(true);
+      } catch (error) {
+        console.error('RoomList 조회 중 에러 발생:', error);
+      }
+    });
+
     socket.on('disconnecting', (socket) => {
       performDisconnectingTask(socket)
         .then(() => {

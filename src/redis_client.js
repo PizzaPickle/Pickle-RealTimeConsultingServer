@@ -16,8 +16,25 @@ async function connectRedis() {
 
 connectRedis().catch(console.error);
 
-async function redisTest() {
-  console.log('redisTest');
+async function getRoomList(userId) {
+  try {
+    const roomList = [];
+    const keys = await redisClient.keys('room:*');
+
+    for (const key of keys) {
+      const customerId = await redisClient.hGet(key, 'customerId');
+      const pb_id = await redisClient.hGet(key, 'pbId');
+
+      if (userId === customerId || userId === pb_id) {
+        roomList.push(await redisClient.hGetAll(key));
+        console.log('같음');
+      }
+    }
+
+    return roomList;
+  } catch (error) {
+    console.error('데이터 조회 오류:', error);
+  }
 }
 
-export { redisTest };
+export { getRoomList };
