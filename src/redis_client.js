@@ -23,9 +23,9 @@ async function getRoomList(userId) {
 
     for (const key of keys) {
       const customerId = await redisClient.hGet(key, 'customerId');
-      const pb_id = await redisClient.hGet(key, 'pbId');
+      const pbId = await redisClient.hGet(key, 'pbId');
 
-      if (userId === customerId || userId === pb_id) {
+      if (userId === customerId || userId === pbId) {
         roomList.push(await redisClient.hGetAll(key));
         console.log('같음');
       }
@@ -37,4 +37,22 @@ async function getRoomList(userId) {
   }
 }
 
-export { getRoomList };
+async function saveConsultingRoomInfo({ roomId, roomInfo }) {
+  try {
+    console.log(roomInfo);
+    await redisClient.hSet(`room:${roomId}`, {
+      roomId: roomInfo.roomId,
+      date: roomInfo.date,
+      customerId: roomInfo.customerId,
+      customerName: roomInfo.customerName,
+      pbId: roomInfo.pbId,
+      pbName: roomInfo.pbName,
+      pbImage: roomInfo.pbImage,
+      pbBranchOffice: roomInfo.pbBranchOffice,
+    });
+    console.log(`room:${roomId}(${roomInfo.customerName}&${roomInfo.pbName})에 대한 정보가 성공적으로 저장됨`);
+  } catch (error) {
+    console.error('상담룸정보 저장 중 오류 발생: ', error);
+  }
+}
+export { getRoomList, saveConsultingRoomInfo };
