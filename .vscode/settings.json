@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["rabbitmq", "retrive"]
+  "cSpell.words": ["rabbitmq", "retrive"],
+  "spellchecker.ignoreWordsList": ["roomId", "pbBranchOffice", "customerName", "customerId", "pbName", "pbId", "pbImage"]
 }
