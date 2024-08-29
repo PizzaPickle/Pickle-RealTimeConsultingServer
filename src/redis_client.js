@@ -23,9 +23,9 @@ async function getRoomList(userId) {
 
     for (const key of keys) {
       const customerId = await redisClient.hGet(key, 'customerId');
-      const pb_id = await redisClient.hGet(key, 'pbId');
+      const pbId = await redisClient.hGet(key, 'pbId');
 
-      if (userId === customerId || userId === pb_id) {
+      if (userId === customerId || userId === pbId) {
         roomList.push(await redisClient.hGetAll(key));
         console.log('같음');
       }
