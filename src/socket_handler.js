@@ -23,7 +23,6 @@ function socketHandler(server) {
 		socket.on('joinConsultingRoom', async (roomId) => {
 			try {
 				socket.join(roomId);
-
 				const roomInfo = await getConsultingRoomInfo(roomId);
 				socket.emit('consultingRoomInfo', roomInfo);
 			} catch (error) {
@@ -31,6 +30,15 @@ function socketHandler(server) {
 			}
 		});
 
+		socket.on('offer', (offer, roomId) => {
+			socket.to(roomId).emit('offer', offer);
+		});
+		socket.on('answer', (answer, roomId) => {
+			socket.to(roomId).emit('answer', answer);
+		});
+		socket.on('ice', (ice, roomId) => {
+			socket.to(roomId).emit('ice', ice);
+		});
 		socket.on('disconnecting', (socket) => {
 			performDisconnectingTask(socket)
 				.then(() => {
