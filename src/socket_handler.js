@@ -1,5 +1,5 @@
 import SocketIO from 'socket.io';
-import { getRoomList } from './redis_client';
+import { getRoomList, getConsultingRoomInfo } from './redis_client';
 
 function socketHandler(server) {
   console.log('소켓 핸들러 함수 시작');
@@ -17,6 +17,17 @@ function socketHandler(server) {
         socket.disconnect(true);
       } catch (error) {
         console.error('RoomList 조회 중 에러 발생:', error);
+      }
+    });
+
+    socket.on('joinConsultingRoom', async (roomId) => {
+      try {
+        socket.join(roomId);
+
+        const roomInfo = await getConsultingRoomInfo(roomId);
+        socket.emit('consultingRoomInfo', roomInfo);
+      } catch (error) {
+        console.error('ConsultingRoom 입장 불가', error);
       }
     });
 
@@ -41,15 +52,6 @@ async function performDisconnectingTask(socket) {
     console.log('소켓 연결 해제 전 필요한 작업을 처리하는 함수');
     resolve();
   });
-}
-
-async function handleRedisTest() {
-  try {
-    await redisTest();
-    console.log('Redis 테스트 완료');
-  } catch (error) {
-    console.error('Redis 테스트 중 오류 발생:', error);
-  }
 }
 
 export default socketHandler;

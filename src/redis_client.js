@@ -27,7 +27,6 @@ async function getRoomList(userId) {
 
       if (userId === customerId || userId === pbId) {
         roomList.push(await redisClient.hGetAll(key));
-        console.log('같음');
       }
     }
 
@@ -77,5 +76,14 @@ async function deleteExpiredRooms() {
     console.error('만료된 상담 방 정보 삭제 중 오류 발생: ', error);
   }
 }
+
+async function getConsultingRoomInfo(roomId) {
+  try {
+    const roomInfo = await redisClient.hGetAll(`room:${roomId}`);
+    return roomInfo;
+  } catch (error) {
+    console.log(`room:${roomId} 정보 조회 중 오류 발생: `, error);
+  }
+}
 setInterval(deleteExpiredRooms, 30 * 60 * 1000);
-export { getRoomList, saveConsultingRoomInfo };
+export { getRoomList, saveConsultingRoomInfo, getConsultingRoomInfo };
