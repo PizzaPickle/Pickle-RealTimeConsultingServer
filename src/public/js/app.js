@@ -336,3 +336,27 @@ async function finallyReceiveAnswer(socket) {
         console.error('answer 수신 중 에러 발생:', error);
     }
 }
+
+muteBtn.addEventListener('click', handleMuteClick);
+function handleMuteClick() {
+    myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled)); // 오디오 트랙 음소거/해제 토글
+    if (!muted) {
+        muteBtn.innerText = '마이크 켜기';
+        muted = true;
+    } else {
+        muteBtn.innerText = '마이크 끄기';
+        muted = false;
+    }
+}
+
+cameraBtn.addEventListener('click', handleCameraClick);
+function handleCameraClick() {
+    myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled)); // 비디오 트랙 활성화/비활성화 토글
+    if (cameraOff) {
+        cameraBtn.innerText = '카메라 끄기';
+        cameraOff = false;
+    } else {
+        cameraBtn.innerText = '카메라 켜기';
+        cameraOff = true;
+    }
+}
