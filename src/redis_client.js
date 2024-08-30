@@ -55,4 +55,27 @@ async function saveConsultingRoomInfo({ roomId, roomInfo }) {
     console.error('상담룸정보 저장 중 오류 발생: ', error);
   }
 }
+
+async function deleteExpiredRooms() {
+  try {
+    const currentTime = Date.now();
+    const roomIds = await redisClient.keys('room:*');
+
+    for (const roomId of roomIds) {
+      const roomInfo = await redisClient.hGetAll(roomId);
+
+      if (roomInfo.date) {
+        const roomTime = new Date(roomInfo.date).getTime();
+
+        if (currentTime - roomTime >= 60 * 60 * 1000) {
+          await redisClient.del(roomId);
+          console.log(`상담룸(room:${roomId})에 대한 정보 삭제(1시간 지남)`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('만료된 상담 방 정보 삭제 중 오류 발생: ', error);
+  }
+}
+setInterval(deleteExpiredRooms, 30 * 60 * 1000);
 export { getRoomList, saveConsultingRoomInfo };
