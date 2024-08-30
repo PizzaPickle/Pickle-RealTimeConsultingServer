@@ -83,6 +83,7 @@ function joinConsultingRoom(roomId) {
 		}
 	});
 }
+
 async function initializeConnectionProcess(socket) {
 	await initConsultingRoom(socket);
 	await makeAndSendOffer(socket);
@@ -99,12 +100,14 @@ async function initConsultingRoom(socket) {
 		console.error('상담룸 초기화 중 에러 발생:', error);
 	}
 }
+
 async function initCall() {
 	welcome.hidden = true;
 	call.hidden = false;
 	roomListContainer.hidden = true;
 	await getMedia();
 }
+
 async function getMedia(deviceId) {
 	const initialConstraints = {
 		audio: true,
@@ -124,6 +127,7 @@ async function getMedia(deviceId) {
 		console.log(error);
 	}
 }
+
 async function getCameras() {
 	try {
 		const devices = await navigator.mediaDevices.enumerateDevices();
@@ -192,7 +196,6 @@ async function makeAndSendOffer(socket) {
 		console.error('offer 생성 및 전송 중 에러 발생:', error);
 	}
 }
-
 async function receiveOfferMakeAnswer(socket) {
 	try {
 		socket.on('offer', async (offer) => {
@@ -207,7 +210,6 @@ async function receiveOfferMakeAnswer(socket) {
 		console.error('offer 수신 및 answer 생성과 전송 중 에러 발생:', error);
 	}
 }
-
 async function finallyReceiveAnswer(socket) {
 	try {
 		socket.on('answer', (answer) => {
@@ -216,5 +218,30 @@ async function finallyReceiveAnswer(socket) {
 		});
 	} catch (error) {
 		console.error('answer 수신 중 에러 발생:', error);
+	}
+}
+
+muteBtn.addEventListener('click', toggleMic);
+cameraBtn.addEventListener('click', toggleVideo);
+function toggleMic() {
+	myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+	if (!muted) {
+		muteBtn.innerText = '마이크 켜기';
+		muted = true;
+	} else {
+		muteBtn.innerText = '마이크 끄기';
+		muted = false;
+	}
+}
+function toggleVideo() {
+	myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+	if (!cameraOff) {
+		console.log(cameraOff);
+		cameraBtn.innerText = '카메라 켜기';
+		cameraOff = true;
+	} else {
+		console.log(cameraOff);
+		cameraBtn.innerText = '카메라 끄기';
+		cameraOff = false;
 	}
 }
