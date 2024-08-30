@@ -15,8 +15,8 @@ let cameraOff = false;
 let myPeerConnection;
 let targetRoomId;
 window.addEventListener('beforeunload', () => {
-  console.log('페이지 떠남, 소켓 연결 해제');
-  socket.disconnect();
+	console.log('페이지 떠남, 소켓 연결 해제');
+	socket.disconnect();
 });
 
 // roomList 가져오기
@@ -27,19 +27,19 @@ showRoomListBtn.addEventListener('click', showRoomList);
 const roomListContainer = document.getElementById('roomList');
 
 function showRoomList() {
-  const socket = io();
-  const userId = document.getElementById('pickleUserInput').value;
+	const socket = io();
+	const userId = document.getElementById('pickleUserInput').value;
 
-  socket.emit('requestRoomList', { userId });
-  socket.on('receiveRoomList', (roomList) => {
-    roomListContainer.innerHTML = '';
+	socket.emit('requestRoomList', { userId });
+	socket.on('receiveRoomList', (roomList) => {
+		roomListContainer.innerHTML = '';
 
-    roomList.forEach((room) => {
-      const newRoomDiv = document.createElement('div');
-      newRoomDiv.classList.add('room');
+		roomList.forEach((room) => {
+			const newRoomDiv = document.createElement('div');
+			newRoomDiv.classList.add('room');
 
-      const roomInfo = document.createElement('p');
-      roomInfo.innerHTML = `
+			const roomInfo = document.createElement('p');
+			roomInfo.innerHTML = `
                   <strong>방 ID:</strong> ${room.roomId}<br>
                   <strong>날짜:</strong> ${new Date(room.date)}<br>
                   <strong>고객 ID:</strong> ${room.customerId}<br>
@@ -49,75 +49,75 @@ function showRoomList() {
                   <strong>PB 지점:</strong> ${room.pbBranchOffice}
       `;
 
-      newRoomDiv.appendChild(roomInfo);
+			newRoomDiv.appendChild(roomInfo);
 
-      const newRoomEnterBtn = document.createElement('button');
-      newRoomEnterBtn.textContent = '입장하기';
-      newRoomEnterBtn.disabled = false;
+			const newRoomEnterBtn = document.createElement('button');
+			newRoomEnterBtn.textContent = '입장하기';
+			newRoomEnterBtn.disabled = false;
 
-      const currentTime = new Date();
-      const roomTime = new Date(room.date);
-      if (roomTime - currentTime >= 10 * 60 * 1000) {
-        newRoomEnterBtn.disabled = true;
-      }
+			const currentTime = new Date();
+			const roomTime = new Date(room.date);
+			if (roomTime - currentTime >= 10 * 60 * 1000) {
+				newRoomEnterBtn.disabled = true;
+			}
 
-      newRoomEnterBtn.addEventListener('click', () => joinConsultingRoom(room.roomId));
-      newRoomDiv.appendChild(newRoomEnterBtn);
-      roomListContainer.appendChild(newRoomDiv);
-    });
-  });
+			newRoomEnterBtn.addEventListener('click', () => joinConsultingRoom(room.roomId));
+			newRoomDiv.appendChild(newRoomEnterBtn);
+			roomListContainer.appendChild(newRoomDiv);
+		});
+	});
 }
 
 function joinConsultingRoom(roomId) {
-  console.log(`입장 버튼 클릭 - 방 ID: ${roomId}`);
-  targetRoomId = roomId;
-  const socket = io();
-  console.log(socket);
-  socket.emit('joinConsultingRoom', roomId);
-  socket.on('consultingRoomInfo', (roomInfo) => {
-    initCall();
-  });
+	console.log(`입장 버튼 클릭 - 방 ID: ${roomId}`);
+	targetRoomId = roomId;
+	const socket = io();
+	console.log(socket);
+	socket.emit('joinConsultingRoom', roomId);
+	socket.on('consultingRoomInfo', (roomInfo) => {
+		initCall();
+	});
 }
 async function initCall() {
-  welcome.hidden = true;
-  call.hidden = false;
-  roomListContainer.hidden = true;
-  await getMedia();
+	welcome.hidden = true;
+	call.hidden = false;
+	roomListContainer.hidden = true;
+	await getMedia();
 }
 async function getMedia(deviceId) {
-  const initialConstraints = {
-    audio: true,
-    video: { facingMode: 'user' },
-  };
-  const cameraConstraints = {
-    audio: true,
-    video: { deviceId: { exact: deviceId } },
-  };
-  try {
-    myStream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
-    myFace.srcObject = myStream;
-    if (!deviceId) {
-      await getCameras();
-    }
-  } catch (error) {
-    console.log(error);
-  }
+	const initialConstraints = {
+		audio: true,
+		video: { facingMode: 'user' },
+	};
+	const cameraConstraints = {
+		audio: true,
+		video: { deviceId: { exact: deviceId } },
+	};
+	try {
+		myStream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstraints);
+		myFace.srcObject = myStream;
+		if (!deviceId) {
+			await getCameras();
+		}
+	} catch (error) {
+		console.log(error);
+	}
 }
 async function getCameras() {
-  try {
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    const cameras = devices.filter((device) => device.kind == 'videoinput');
-    const currentCamera = myStream.getVideoTracks()[0];
-    cameras.forEach((camera) => {
-      const option = document.createElement('option');
-      option.value = camera.deviceId;
-      option.innerText = camera.label;
-      if (currentCamera.label === camera.label) {
-        option.selected = true;
-      }
-      camerasSelect.appendChild(option);
-    });
-  } catch (error) {
-    console.log(error);
-  }
+	try {
+		const devices = await navigator.mediaDevices.enumerateDevices();
+		const cameras = devices.filter((device) => device.kind == 'videoinput');
+		const currentCamera = myStream.getVideoTracks()[0];
+		cameras.forEach((camera) => {
+			const option = document.createElement('option');
+			option.value = camera.deviceId;
+			option.innerText = camera.label;
+			if (currentCamera.label === camera.label) {
+				option.selected = true;
+			}
+			camerasSelect.appendChild(option);
+		});
+	} catch (error) {
+		console.log(error);
+	}
 }
