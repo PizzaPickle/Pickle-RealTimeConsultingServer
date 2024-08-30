@@ -41,7 +41,7 @@ function showRoomList() {
       const roomInfo = document.createElement('p');
       roomInfo.innerHTML = `
                   <strong>방 ID:</strong> ${room.roomId}<br>
-                  <strong>날짜:</strong> ${room.date}<br>
+                  <strong>날짜:</strong> ${new Date(room.date)}<br>
                   <strong>고객 ID:</strong> ${room.customerId}<br>
                   <strong>고객 이름:</strong> ${room.customerName}<br>
                   <strong>PB ID:</strong> ${room.pbId}<br>
@@ -53,14 +53,21 @@ function showRoomList() {
 
       const newRoomEnterBtn = document.createElement('button');
       newRoomEnterBtn.textContent = '입장하기';
+      newRoomEnterBtn.disabled = false;
 
-      newRoomEnterBtn.addEventListener('click', () => {
-        console.log(`입장 버튼 클릭 - 방 ID: ${room.roomId}`);
-      });
+      const currentTime = new Date();
+      const roomTime = new Date(room.date);
+      if (roomTime - currentTime >= 10 * 60 * 1000) {
+        newRoomEnterBtn.disabled = true;
+      }
 
+      newRoomEnterBtn.addEventListener('click', () => enterConsultingRoom(room.roomId));
       newRoomDiv.appendChild(newRoomEnterBtn);
-
       roomListContainer.appendChild(newRoomDiv);
     });
   });
+}
+
+function enterConsultingRoom(roomId) {
+  console.log(`입장 버튼 클릭 - 방 ID: ${roomId}`);
 }
