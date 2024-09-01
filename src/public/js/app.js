@@ -9,11 +9,16 @@ const shareScreenBtn = document.getElementById('shareScreen');
 const camerasSelect = document.getElementById('cameras');
 const microphonesSelect = document.getElementById('microphones');
 
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendButton');
+const chatBox = document.getElementById('chatBox');
+
 let myStream;
 let screenStream;
 let muted = false;
 let cameraOff = false;
 let myPeerConnection;
+let myDataChannel;
 let targetRoomId;
 
 const DEVICE_TYPES = {
@@ -288,7 +293,7 @@ function handIceEvent(event, socket) {
 // TODO: 화면 공유 시 로직 변경
 function handleTrackEvent(event) {
     if (event.track.kind === 'video') {
-        sharedScreen.srcObject = event.streams[0];
+        peerFace.srcObject = event.streams[0];
     }
 }
 
@@ -302,6 +307,13 @@ async function receiveIce(socket) {
 
 async function makeAndSendOffer(socket) {
     try {
+        myDataChannel = myPeerConnection.createDataChannel('communication');
+        myDataChannel.addEventListener('message', (event) => {
+            // TODO: roomInfo에서 내가 어떤 사용자냐에 따라, 상대의 정보(이름 or 유형)를 넣어주기
+            addMessageToChat('상대방', event.data);
+        });
+
+        console.log('made data channel');
         const offer = await myPeerConnection.createOffer();
         await myPeerConnection.setLocalDescription(offer);
         socket.emit('offer', offer, targetRoomId);
@@ -314,8 +326,15 @@ async function makeAndSendOffer(socket) {
 async function receiveOfferMakeAnswer(socket) {
     try {
         socket.on('offer', async (offer) => {
+            myPeerConnection.addEventListener('datachannel', (event) => {
+                myDataChannel = event.channel;
+                myDataChannel.addEventListener('message', (event) => {
+                    console.log('Received message:', event.data);
+                    addMessageToChat('상대방', event.data);
+                });
+            });
             console.log('2-1. offer 수신 ');
-            myPeerConnection.setRemoteDescription(offer);
+            await myPeerConnection.setRemoteDescription(offer);
             const answer = await myPeerConnection.createAnswer();
             await myPeerConnection.setLocalDescription(answer);
             console.log('2-2. answer 생성 및 전송 ');
@@ -336,10 +355,12 @@ async function finallyReceiveAnswer(socket) {
         console.error('answer 수신 중 에러 발생:', error);
     }
 }
-
+/**
+ * 마이크 끄기/켜기 버튼 클릭 시, 오디오 트랙 음소거/해제 토글
+ */
 muteBtn.addEventListener('click', handleMuteClick);
 function handleMuteClick() {
-    myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled)); // 오디오 트랙 음소거/해제 토글
+    myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
     if (!muted) {
         muteBtn.innerText = '마이크 켜기';
         muted = true;
@@ -348,10 +369,12 @@ function handleMuteClick() {
         muted = false;
     }
 }
-
+/**
+ * 카메라 끄기/켜기 버튼 클릭 시, 비디오 트랙 활성화 및 비활성화
+ */
 cameraBtn.addEventListener('click', handleCameraClick);
 function handleCameraClick() {
-    myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled)); // 비디오 트랙 활성화/비활성화 토글
+    myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
     if (cameraOff) {
         cameraBtn.innerText = '카메라 끄기';
         cameraOff = false;
@@ -359,4 +382,27 @@ function handleCameraClick() {
         cameraBtn.innerText = '카메라 켜기';
         cameraOff = true;
     }
+}
+/**
+ * 보내기 버튼을 누르면, 상대방에게도 전달되고 나의 채팅창에도 표시되도록 함
+ */
+sendBtn.addEventListener('click', sendMessage);
+function sendMessage() {
+    const message = messageInput.value;
+    if (message && myDataChannel.readyState === 'open') {
+        myDataChannel.send(message);
+    }
+    addMessageToChat('나', message);
+    messageInput.value = '';
+}
+/**
+ * 채팅창에 입력한 메시지를 표시
+ * @param {string} sender 보내는 사람 (고객, PB) 혹은 성함이 될 수 있음
+ * @param {string} message 메시지
+ */
+function addMessageToChat(sender, message) {
+    const messageElement = document.createElement('p');
+    messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+    chatBox.appendChild(messageElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
 }
