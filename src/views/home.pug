@@ -26,7 +26,13 @@ html(lang="en")
                     button#mute 마이크 끄기
                     button#camera 카메라 끄기
                     select#cameras
+                    select#microphones
                     button#shareScreen Share Screen
+                div#chatContainer(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                    h4 채팅
+                    div#chatBox(style="height: 150px; overflow-y: scroll; border: 1px solid #ccc; padding: 5px; margin-bottom: 5px;")
+                    input#messageInput(type="text" placeholder="메시지를 입력하세요..." style="width: 80%;")
+                    button#sendButton(type="button") 보내기
     script(src="/socket.io/socket.io.js")                    
     script(src="/public/js/app.js")
       
