@@ -111,7 +111,7 @@ function joinConsultingRoom(roomId) {
 			isPeerScreenSharing = false;
 			await initializeConnectionProcess(socket);
 			socket.on('newUserJoined', () => {
-				makeConnection();
+				makeConnection(socket);
 			});
 			leaveRoomBtn.addEventListener('click', () => handleLeaveRoom(socket));
 		} catch (error) {
@@ -384,6 +384,8 @@ function handleICEConnectionStateChange(event, socket) {
 function handlePeerDisconnection() {
 	console.log('Peer 연결이 끊어졌습니다.');
 
+	if (isScreenSharing) stopScreenShare();
+
 	// UI 업데이트
 	updateUIForDisconnection();
 
@@ -395,8 +397,11 @@ function handlePeerDisconnection() {
 	stopStream(peerFace.srcObject, 'peerFace', ACTION_STREAM_TYPES.STOP_PEERFACE);
 	stopStream(sharedScreen.srcObject, 'sharedScreen', ACTION_STREAM_TYPES.STOP_SCREENSHARE);
 
+	// myPeerConnection.disconnect();
 	isPeerScreenSharing = false;
 	isScreenSharing = false;
+	myDataChannel.close();
+	myDataChannel = null;
 }
 /**
  * 상대방 비디오 요소를 숨기는 홤수
@@ -457,6 +462,10 @@ async function receiveIce(socket) {
  */
 async function makeAndSendOffer(socket) {
 	try {
+		if (!socket || !socket.connected) {
+			console.error('Socket is not connected');
+			return;
+		}
 		myDataChannel = myPeerConnection.createDataChannel('communication');
 		myDataChannel.addEventListener('message', (event) => {
 			const message = JSON.parse(event.data);
@@ -773,11 +782,6 @@ async function handleLeaveRoom(socket) {
 	showInitialScreen();
 	socket.disconnect();
 	console.log('방 나가기 완료');
-
-	socket.on('peerDisconnecting', () => {
-		console.log('myPeerConnection.disconnect');
-		myPeerConnection.disconnect();
-	});
 }
 async function cleanupResources(socket) {
 	console.log('자원 정리 시작');
@@ -848,7 +852,3 @@ function cleanupChatBox() {
 	chatBox.innerHTML = ''; // 모든 채팅 메시지 삭제
 	console.log('채팅창이 초기화되었습니다.');
 }
-
-// C1이 화면공유 중, C2가 나가게 되면 C1의 화면공유 화면이 사라짐, But, 화면공유버튼은 그대로 '화면 공유 중지'
-// C2가 다시 온 상황에서, C1이 화면공유를 하게 되면, C2에게 보여지지 않음
-// 화면 공유했던 사람이 나갔다가 다시 들어와서 화면 공유하는 것은 가능
