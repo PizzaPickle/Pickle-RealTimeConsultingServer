@@ -1,0 +1,10 @@
+{
+  "roomId": "1",
+  "date": "2024-08-29T10:15:30.000Z",
+  "pbBranchOffice": "강남",
+  "customerName": "수연",
+  "customerId": "soo",
+  "pbImage": "https://example.com/image1.jpg",
+  "pbName": "나현",
+  "pbId": "pna"
+}
