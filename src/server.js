@@ -2,6 +2,10 @@ import express from 'express';
 import http from 'http';
 import socketHandler from './socket_handler';
 import setupMQ from './mq_handler';
+import { Server } from 'socket.io';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
@@ -11,8 +15,14 @@ app.use('/public', express.static(__dirname + '/public'));
 app.get('/', (req, res) => res.render('home'));
 
 const server = http.createServer(app);
+const io = new Server(server, {
+	cors: {
+		origin: process.env.REACT_APP_ORIGIN,
+		methods: ['GET', 'POST'],
+	},
+});
 setupMQ();
-socketHandler(server);
+socketHandler(io);
 
 server.listen(3000, () => {
 	console.log('Server is listening on port 3000');

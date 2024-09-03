@@ -1,10 +1,10 @@
 import SocketIO from 'socket.io';
 import { getRoomList, getConsultingRoomInfo } from './redis_client';
 
-function socketHandler(server) {
+function socketHandler(wsServer) {
 	console.log('소켓 핸들러 함수 시작');
 
-	const wsServer = SocketIO(server);
+	// const wsServer = SocketIO(server);
 
 	wsServer.on('connection', (socket) => {
 		console.log('소켓 연결됨');
@@ -12,7 +12,7 @@ function socketHandler(server) {
 		socket.on('requestRoomList', async ({ userId }) => {
 			try {
 				const roomList = await getRoomList(userId);
-				socket.emit('receiveRoomList', roomList);
+				socket.emit('receiveRoomList', JSON.stringify(roomList));
 
 				socket.disconnect(true);
 			} catch (error) {
