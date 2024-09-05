@@ -4,15 +4,16 @@ import socketHandler from './socket_handler';
 import setupMQ from './mq_handler';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
-
+import setupRoutes from './routes/index.js';
+import bodyParser from 'body-parser';
 dotenv.config();
 
 const app = express();
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 app.use('/public', express.static(__dirname + '/public'));
-app.get('/', (req, res) => res.render('home'));
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -21,6 +22,7 @@ const io = new Server(server, {
 		methods: ['GET', 'POST'],
 	},
 });
+setupRoutes(app);
 setupMQ();
 socketHandler(io);
 

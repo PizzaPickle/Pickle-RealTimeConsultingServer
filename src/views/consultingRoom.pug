@@ -1,0 +1,44 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title PICKLE
+        script.
+            window.ROOM_DATA = {
+                roomId: '#{roomId || ""}',
+                userId: '#{userId || ""}',
+                userName: '#{userName || ""}'
+            };
+        link(rel="stylesheet", href="https://unpkg.com/mvp.css")
+    body 
+        header 
+            h1 Consulting Session
+        main 
+            div#welcome
+                div(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                    h4 테스트를 위해 userId를 입력하는 폼
+                    input#pickleUserInput(placeholder="userId", required, type="text")
+                    button#showRoomList Show RoomList
+            div#roomList(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                h4 userId를 입력하면, user가 입장할 수 있는 룸을 보여주는 곳
+            div#call(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                h4 특정 룸 입장 시, 보여지는 것
+                div#myStream
+                    video#sharedScreen(autoplay, playsinline, width="600", height="400")
+                    video#myFace(autoplay, playsinline, width="300", height="300")
+                    video#peerFace(autoplay, playsinline, width="300", height="300")       
+                div#controls
+                    button#mute 마이크 끄기
+                    button#camera 카메라 끄기
+                    select#cameras
+                    select#microphones
+                    button#shareScreen 화면 공유하기
+                div#chatContainer(style="border-color: gray; border-style: solid; border-width:1px; padding: 5px; margin:5px; border-radius: 10px;")
+                    h4 채팅
+                    div#chatBox(style="height: 150px; overflow-y: scroll; border: 1px solid #ccc; padding: 5px; margin-bottom: 5px;")
+                    input#messageInput(type="text" placeholder="메시지를 입력하세요..." style="width: 80%;")
+                    button#sendButton(type="button") 보내기
+                button#leaveRoom 나가기
+    script(src="/socket.io/socket.io.js")                    
+    script(src="/public/js/consultingRoom.js")

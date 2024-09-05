@@ -45,7 +45,6 @@ function socketHandler(wsServer) {
 			socket.to(roomId).emit('answer', answer);
 		});
 		socket.on('ice', ({ ice, roomId }) => {
-			console.log(ice);
 			socket.to(roomId).emit('ice', ice);
 		});
 		socket.on('disconnecting', () => {
