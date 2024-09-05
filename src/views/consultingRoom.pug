@@ -1,0 +1,42 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title PICKLE
+        script.
+            window.ROOM_DATA = {
+                roomId: '#{roomId || ""}',
+                userId: '#{userId || ""}',
+                userName: '#{userName || ""}'
+            };
+        link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css", rel="stylesheet")
+        link(rel="stylesheet", href="/public/css/consultingRoom.css")
+    body 
+        header 
+            h1#roomTitle
+        main 
+            div#call
+                div#videoContainer
+                    video#sharedScreen(autoplay, playsinline)
+                    video#myFace(autoplay, playsinline)
+                    video#peerFace(autoplay, playsinline)
+                div#controls
+                    button#mute
+                        i.fas.fa-microphone
+                    button#camera
+                        i.fas.fa-video
+                    select#cameras
+                    select#microphones
+                    button#shareScreen
+                        i.fas.fa-desktop
+                button#leaveRoom 나가기
+        button#chatToggle
+            i.fas.fa-comments
+        div#chatContainer
+            div#chatBox
+            input#messageInput(type="text", placeholder="Type your message...")
+            button#sendButton 
+                i.fas.fa-paper-plane
+        script(src="/socket.io/socket.io.js")
+        script(src="/public/js/consultingRoom.js")

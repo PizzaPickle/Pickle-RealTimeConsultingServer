@@ -1,10 +1,36 @@
 {
-  "roomId": "1",
-  "date": "2024-08-29T10:15:30.000Z",
+  "roomId": "2",
+  "date": "2024-09-03T10:15:30.000Z",
   "pbBranchOffice": "강남",
   "customerName": "수연",
   "customerId": "soo",
   "pbImage": "https://example.com/image1.jpg",
   "pbName": "나현",
-  "pbId": "pna"
+  "pbId": "pna",
+  "status": "대기중"
+}
+
+
+{
+  "roomId": "2",
+  "date": "2024-09-03T10:15:30.000Z",
+  "pbBranchOffice": "강남",
+  "customerName": "수연",
+  "customerId": "soo",
+  "pbImage": "https://api.dicebear.com/9.x/fun-emoji/svg",
+  "pbName": "나현",
+  "pbId": "pna",
+  "status": "대기중"
+}
+
+{
+  "roomId": "2",
+  "date": "2024-09-03T10:15:30.000Z",
+  "pbBranchOffice": "강남",
+  "customerName": "수연",
+  "customerId": "soo",
+  "pbImage": "https://api.dicebear.com/9.x/fun-emoji/svg?radius=10&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf",
+  "pbName": "나현",
+  "pbId": "pna",
+  "status": "대기중"
 }

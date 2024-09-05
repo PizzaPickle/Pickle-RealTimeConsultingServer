@@ -1,18 +1,19 @@
 import SocketIO from 'socket.io';
 import { getRoomList, getConsultingRoomInfo } from './redis_client';
 
-function socketHandler(server) {
+function socketHandler(wsServer) {
 	console.log('소켓 핸들러 함수 시작');
 
-	const wsServer = SocketIO(server);
+	// const wsServer = SocketIO(server);
 
 	wsServer.on('connection', (socket) => {
 		console.log('소켓 연결됨');
 
 		socket.on('requestRoomList', async ({ userId }) => {
+			console.log('1. requestRoomList');
 			try {
 				const roomList = await getRoomList(userId);
-				socket.emit('receiveRoomList', roomList);
+				socket.emit('receiveRoomList', JSON.stringify(roomList));
 
 				socket.disconnect(true);
 			} catch (error) {
@@ -20,26 +21,30 @@ function socketHandler(server) {
 			}
 		});
 
-		socket.on('joinConsultingRoom', async (roomId) => {
+		socket.on('joinConsultingRoom', async ({ roomId, userId, userName }) => {
+			console.log('2. joinConsultingRoom');
+			console.log(roomId, userId);
 			try {
 				socket.join(roomId);
 
 				const roomInfo = await getConsultingRoomInfo(roomId);
-				socket.emit('consultingRoomInfo', roomInfo);
+				socket.emit('joinedConsultingRoom', roomInfo);
 
-				socket.to(roomId).emit('newUserJoined', { message: '입장했습니다.' });
+				socket.to(roomId).emit('newUserJoined', { userName, message: '입장했습니다.' });
 			} catch (error) {
 				console.error('ConsultingRoom 입장 불가', error);
 			}
 		});
 
-		socket.on('offer', (offer, roomId) => {
+		socket.on('offer', ({ offer, roomId }) => {
+			console.log('offer');
 			socket.to(roomId).emit('offer', offer);
 		});
-		socket.on('answer', (answer, roomId) => {
+		socket.on('answer', ({ answer, roomId }) => {
+			console.log('answer');
 			socket.to(roomId).emit('answer', answer);
 		});
-		socket.on('ice', (ice, roomId) => {
+		socket.on('ice', ({ ice, roomId }) => {
 			socket.to(roomId).emit('ice', ice);
 		});
 		socket.on('disconnecting', () => {
