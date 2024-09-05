@@ -35,19 +35,18 @@ function setupMQ() {
 					async (message) => {
 						if (message != null) {
 							try {
-								console.log('Received message: ', message.content.toString());
-								const messageContent = eval(`(${message.content.toString()})`);
+								const messageContent = JSON.parse(message.content.toString());
 								console.log(` [x] Received at Queue(${queue})`);
 								console.log(messageContent);
 
 								if (queue === QUEUE_NAMES.CONSULTING_ROOM_CREATION) {
 									const { roomId } = messageContent;
 									await saveConsultingRoomInfo({ roomId, roomInfo: messageContent });
+									channel.ack(message);
 								}
-
-								channel.ack(message);
 							} catch (error) {
 								console.error('메시지 처리 중 오류 발생: ', error);
+								// channel.nack(message, false, true);
 							}
 						}
 					},
