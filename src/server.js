@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import socketHandler from './socket_handler.js';
-import setupMQ from './mq_handler';
+import setupMQ from './mq_handler.js';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import setupRoutes from './routes/index.js';

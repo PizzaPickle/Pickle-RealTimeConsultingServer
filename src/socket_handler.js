@@ -1,5 +1,4 @@
-import SocketIO from 'socket.io';
-import { getRoomList, getConsultingRoomInfo } from './redis_client';
+import { getRoomList, getConsultingRoomInfo } from './redis_client.js';
 
 function socketHandler(wsServer) {
 	console.log('소켓 핸들러 함수 시작');
