@@ -26,6 +26,5 @@ jobs:
           git fetch --all
           git pull origin main
           npm install
-          cd ./src
+          echo "${{ secrets.EC2_ENV_CONTENT }}" > .env
           pm2 restart server || pm2 start server.js --name "server"
-
