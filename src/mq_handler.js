@@ -1,22 +1,18 @@
 import amqp from 'amqplib/callback_api.js';
-import dotenv from 'dotenv';
+import ENV from './config.js';
 import { saveConsultingRoomInfo } from './redis_client.js';
 import { QUEUE_NAMES } from './constants.js';
 
-dotenv.config();
-
 function setupMQ() {
-  const rabbitmqUser = process.env.RABBITMQ_USER;
-  const rabbitmqPassword = process.env.RABBITMQ_PASSWORD;
-  const rabbitmqHost = process.env.RABBITMQ_HOST;
-  const rabbitmqPort = process.env.RABBITMQ_PORT;
   amqp.connect(
-    `amqp://${rabbitmqUser}:${rabbitmqPassword}@${rabbitmqHost}:${rabbitmqPort}`,
+    `amqp://${ENV.RABBITMQ_USER}:${ENV.RABBITMQ_PASSWORD}@${ENV.RABBITMQ_HOST}:${ENV.RABBITMQ_PORT}`,
+
     (error0, connection) => {
       if (error0) {
         throw error0;
       }
-      console.log(`rabbitMQ(${rabbitmqHost})에 연결 완료`);
+      console.log(`rabbitMQ(${ENV.RABBITMQ_HOST})에 연결 완료`);
+
       connection.createChannel((error1, channel) => {
         if (error1) {
           throw error1;
@@ -30,7 +26,9 @@ function setupMQ() {
             durable: true,
           });
 
-				console.log(`[*] Queue(${queue})에서 메시지를 기다리고 있습니다. 종료하려면 CTRL+C를 누르세요.`);
+          console.log(
+            `[*] Queue(${queue})에서 메시지를 기다리고 있습니다. 종료하려면 CTRL+C를 누르세요.`
+          );
 
           channel.consume(
             queue,
@@ -56,7 +54,9 @@ function setupMQ() {
           );
         });
       });
-	});
+    }
+  );
+
 }
 
 export default setupMQ;
