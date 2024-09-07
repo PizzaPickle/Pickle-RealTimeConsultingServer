@@ -25,9 +25,18 @@ async function getRoomList(userId) {
     for (const key of keys) {
       const customerId = await redisClient.hGet(key, 'customerId');
       const pbId = await redisClient.hGet(key, 'pbId');
-
       if (userId === customerId || userId === pbId) {
-        roomList.push(await redisClient.hGetAll(key));
+        const roomData = await redisClient.hGetAll(key);
+        roomList.push({
+          roomId: roomData.roomId,
+          date: roomData.date,
+          customerId: roomData.customerId,
+          customerName: roomData.customerName,
+          pbId: roomData.pbId,
+          pbName: roomData.pbName,
+          pbImage: roomData.pbImage,
+          pbBranchOffice: roomData.pbBranchOffice,
+        });
       }
     }
 
