@@ -26,5 +26,6 @@ jobs:
           git fetch --all
           git pull origin main
           npm install
-          npm run build
-          pm2 restart server || pm2 start npm --name "server" 
+          cd ./src
+          pm2 restart server || pm2 start server.js --name "server"
+
