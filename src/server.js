@@ -6,14 +6,20 @@ import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import setupRoutes from './routes/index.js';
 import bodyParser from 'body-parser';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
-app.use('/public', express.static(__dirname + '/public'));
+app.set('views', join(__dirname, 'views'));
+app.use('/public', express.static(join(__dirname, 'public')));
 
 const server = http.createServer(app);
 const io = new Server(server, {
