@@ -1,5 +1,5 @@
 import { createClient } from 'redis';
-require('dotenv').config();
+import dotenv from 'dotenv';
 
 const redisClient = createClient({
     port: process.env.REDIS_PORT || 6379,
