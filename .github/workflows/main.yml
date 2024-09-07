@@ -27,4 +27,5 @@ jobs:
           git pull origin main
           npm install
           echo "${{ secrets.EC2_ENV_CONTENT }}" > .env
+          cd ./src
           pm2 restart server || pm2 start server.js --name "server"
