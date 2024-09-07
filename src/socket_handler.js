@@ -1,4 +1,3 @@
-import SocketIO from 'socket.io';
 import { getRoomList, getConsultingRoomInfo } from './redis_client.js';
 
 function socketHandler(wsServer) {
