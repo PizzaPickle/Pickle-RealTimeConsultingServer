@@ -1,0 +1,47 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+      - deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test
+
+  deploy-ec2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH client
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
+          ENV_CONTENT: ${{ secrets.EC2_ENV_CONTENT }}
+        run: |
+          echo "${EC2_SSH_KEY}" > ec2-key.pem
+          chmod 600 ec2-key.pem
+          
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${EC2_USER}@${EC2_HOST} "mkdir -p /home/ubuntu/consulting"
+          
+          scp -i ec2-key.pem -r * ${EC2_USER}@${EC2_HOST}:/home/ubuntu/consulting
+          
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${EC2_USER}@${EC2_HOST} "echo '${ENV_CONTENT}' > /home/ubuntu/consulting"
+
+          # Install dependencies and restart the application
+          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${EC2_USER}@${EC2_HOST} "cd /home/ubuntu/consulting && npm install && pm2 restart app"
