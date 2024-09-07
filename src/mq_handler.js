@@ -9,8 +9,7 @@ function setupMQ() {
 	const rabbitmqUser = process.env.RABBITMQ_USER;
 	const rabbitmqPassword = process.env.RABBITMQ_PASSWORD;
 	const rabbitmqHost = process.env.RABBITMQ_HOST;
-
-	amqp.connect(`amqp://${rabbitmqUser}:${rabbitmqPassword}@${rabbitmqHost}`, (error0, connection) => {
+	amqp.connect(`amqp://${rabbitmqUser}:${rabbitmqPassword}@${rabbitmqHost}:${rabbitmqPort}`, (error0, connection) => {
 		if (error0) {
 			throw error0;
 		}
