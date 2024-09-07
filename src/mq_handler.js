@@ -6,11 +6,13 @@ import { QUEUE_NAMES } from './constants.js';
 function setupMQ() {
   amqp.connect(
     `amqp://${ENV.RABBITMQ_USER}:${ENV.RABBITMQ_PASSWORD}@${ENV.RABBITMQ_HOST}:${ENV.RABBITMQ_PORT}`,
+
     (error0, connection) => {
       if (error0) {
         throw error0;
       }
       console.log(`rabbitMQ(${ENV.RABBITMQ_HOST})에 연결 완료`);
+
       connection.createChannel((error1, channel) => {
         if (error1) {
           throw error1;
@@ -54,6 +56,7 @@ function setupMQ() {
       });
     }
   );
+
 }
 
 export default setupMQ;
