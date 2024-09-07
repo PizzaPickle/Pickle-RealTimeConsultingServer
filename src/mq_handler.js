@@ -1,4 +1,4 @@
-import amqp from 'amqplib/callback_api';
+import amqp from 'amqplib/callback_api.js';
 import dotenv from 'dotenv';
 import { saveConsultingRoomInfo } from './redis_client.js';
 import { QUEUE_NAMES } from './constants.js';
