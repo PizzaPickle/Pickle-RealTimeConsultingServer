@@ -1,31 +1,48 @@
 import express from 'express';
 import http from 'http';
-import socketHandler from './socket_handler';
-import setupMQ from './mq_handler';
+import socketHandler from './socket_handler.js';
+import setupMQ from './mq_handler.js';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
+import ENV from './config.js';
 import setupRoutes from './routes/index.js';
 import bodyParser from 'body-parser';
-dotenv.config();
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import cors from 'cors';
+import consultingRoutes from './routes/consultingRoutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.set('view engine', 'pug');
-app.set('views', __dirname + '/views');
-app.use('/public', express.static(__dirname + '/public'));
+app.set('views', join(__dirname, 'views'));
+app.use('/public', express.static(join(__dirname, 'public')));
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://pickle.my'); // Nginx가 서비스하는 도메인
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    next();
+});
+// 기타 설정 및 소켓 설정
 const server = http.createServer(app);
 const io = new Server(server, {
-	cors: {
-		origin: process.env.REACT_APP_ORIGIN,
-		methods: ['GET', 'POST'],
-	},
+    cors: {
+        origin: 'https://pickle.my', // Nginx가 서비스하는 도메인
+        methods: ['GET', 'POST'],
+        credentials: true,
+    },
 });
 setupRoutes(app);
 setupMQ();
 socketHandler(io);
 
 server.listen(3000, () => {
-	console.log('Server is listening on port 3000');
+    console.log('Server is listening on port 3000');
 });
