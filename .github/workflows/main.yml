@@ -23,6 +23,7 @@ jobs:
         port: 22
         script: |
           cd /home/ubuntu/server/RealTimeConsultingServer
+          git remote update
           git fetch --all
           git pull origin main
           npm install
