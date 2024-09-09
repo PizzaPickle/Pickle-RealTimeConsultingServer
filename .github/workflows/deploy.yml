@@ -1,0 +1,29 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          cd /home/ubuntu/server/RealTimeConsultingServer
+          git fetch --all
+          git pull origin main
+          npm install
+          echo "${{ secrets.EC2_ENV_CONTENT }}" > .env
+          pm2 restart server || pm2 start ./src/server.js --name "server" --env-file .env
