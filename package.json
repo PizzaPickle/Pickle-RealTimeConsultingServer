@@ -21,10 +21,5 @@
     "pug": "^3.0.3",
     "redis": "^4.7.0",
     "socket.io": "^4.7.5"
-  },
-  "proxy": [
-    "https://pickle.my",
-    "http://127.0.0.1:5173",
-    "https://api.dicebear.com/9.x/fun-emoji/svg"
-  ]
+  }
 }

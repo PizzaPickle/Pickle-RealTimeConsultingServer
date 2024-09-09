@@ -22,25 +22,27 @@ app.set('views', join(__dirname, 'views'));
 app.use('/public', express.static(join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', ENV.REACT_APP_ORIGIN);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
+    res.setHeader('Access-Control-Allow-Origin', 'https://pickle.my'); // Nginx가 서비스하는 도메인
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization'
+    );
+    next();
 });
-
 // 기타 설정 및 소켓 설정
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: ENV.REACT_APP_ORIGIN,
-    methods: ['GET', 'POST'],
-    credentials: true, // 소켓 통신을 위한 CORS 설정
-  },
+    cors: {
+        origin: 'https://pickle.my', // Nginx가 서비스하는 도메인
+        methods: ['GET', 'POST'],
+        credentials: true,
+    },
 });
 setupRoutes(app);
 setupMQ();
 socketHandler(io);
 
 server.listen(3000, () => {
-  console.log('Server is listening on port 3000');
+    console.log('Server is listening on port 3000');
 });
