@@ -31,7 +31,7 @@ const roomTitle = document.getElementById('roomTitle');
 // 페이지 로드 시 자동으로 상담방 입장
 window.addEventListener('load', () => {
     targetRoomId = roomId;
-    socket = io('http://pickle.my', {
+    socket = io('https://pickle.my/consulting', {
         path: '/socket.io/',
         transports: ['websocket'],
     });
