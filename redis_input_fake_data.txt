@@ -25,6 +25,7 @@
 
 {
   "roomId": "2",
+  "consultingHistoryId": "1",
   "date": "2024-09-03T10:15:30.000Z",
   "pbBranchOffice": "강남",
   "customerName": "수연",

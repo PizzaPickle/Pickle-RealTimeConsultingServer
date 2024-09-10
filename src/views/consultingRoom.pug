@@ -10,8 +10,10 @@ html(lang="en")
                 userId: '#{userId || ""}',
                 userName: '#{userName || ""}'
             };
+        script(src="https://cdn.socket.io/4.5.4/socket.io.min.js")  
         link(href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css", rel="stylesheet")
         link(rel="stylesheet", href="/public/css/consultingRoom.css")
+        //- script(src="/public/js/socket.io.js") 
     body 
         header 
             h1#roomTitle
@@ -38,5 +40,5 @@ html(lang="en")
             input#messageInput(type="text", placeholder="Type your message...")
             button#sendButton 
                 i.fas.fa-paper-plane
-        script(src="/socket.io/socket.io.js")
-        script(src="/public/js/consultingRoom.js")
+        //- script(src="/socket.io/socket.io.js")
+        script(src="/js/consultingRoom.js")
