@@ -16,15 +16,15 @@ async function connectRedis() {
 }
 
 connectRedis().catch(console.error);
-
 async function getRoomList(userId) {
     try {
-        const roomList = [];
-        const keys = await redisClient.keys('room:*');
+        const roomList = []; // 빈 배열로 초기화
+        const keys = await redisClient.keys('room:*'); // Redis에서 모든 키 가져오기
 
         for (const key of keys) {
             const customerId = await redisClient.hGet(key, 'customerId');
             const pbId = await redisClient.hGet(key, 'pbId');
+            // 고객 ID 또는 PB ID가 사용자 ID와 일치하는 경우만 필터링
             if (userId === customerId || userId === pbId) {
                 const roomData = await redisClient.hGetAll(key);
                 roomList.push({
@@ -41,9 +41,11 @@ async function getRoomList(userId) {
             }
         }
 
+        console.log('Fetched room list:', roomList); // 디버깅용 출력
         return roomList;
     } catch (error) {
         console.error('데이터 조회 오류:', error);
+        return [];
     }
 }
 
