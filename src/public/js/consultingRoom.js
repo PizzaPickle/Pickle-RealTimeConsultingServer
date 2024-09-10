@@ -35,7 +35,6 @@ window.addEventListener('load', () => {
         path: '/socket.io/',
         transports: ['websocket'],
     });
-    joinConsultingRoom(roomId);
     roomTitle.innerHTML = `${userName}님의 상담룸`;
     muteBtn.addEventListener('click', handleMuteClick); // 마이크 켜기/끄기 버튼 클릭 시
     cameraBtn.addEventListener('click', handleCameraClick); // 카메라 켜기/끄기 버튼 클릭 시
@@ -44,9 +43,7 @@ window.addEventListener('load', () => {
     shareScreenBtn.addEventListener('click', handleShareClick); // 화면 공유 버튼 클릭 시
     chatToggle.addEventListener('click', toggleChat); // 채팅 토글 버튼 클릭 시
 
-    targetRoomId = roomId; // 상담룸 ID 설정
     joinConsultingRoom(roomId); // 상담룸 입장
-    roomTitle.innerHTML = `${userName}님의 상담룸`; // 방 제목 설정
 });
 
 const DEVICE_TYPES = {
