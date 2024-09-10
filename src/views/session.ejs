@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PICKLE</title>
+        <script>
+            window.ROOM_DATA = {
+                roomId: '<%= roomId || "" %>',
+                userId: '<%= userId || "" %>',
+                userName: '<%= userName || "" %>',
+            };
+        </script>
+        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="/css/consultingRoom.css" />
+        <!-- <script src="/public/js/socket.io.js"></script> -->
+    </head>
+    <body>
+        <header>
+            <h1 id="roomTitle"></h1>
+        </header>
+        <main>
+            <p>방 ID <%= roomId %></p>
+            <div id="call">
+                <div id="videoContainer">
+                    <video id="sharedScreen" autoplay playsinline></video>
+                    <video id="myFace" autoplay playsinline></video>
+                    <video id="peerFace" autoplay playsinline></video>
+                </div>
+                <div id="controls">
+                    <button id="mute">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="camera">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <select id="cameras"></select>
+                    <select id="microphones"></select>
+                    <button id="shareScreen">
+                        <i class="fas fa-desktop"></i>
+                    </button>
+                    <button id="leaveRoom">나가기</button>
+                </div>
+            </div>
+        </main>
+        <button id="chatToggle">
+            <i class="fas fa-comments"></i>
+        </button>
+        <div id="chatContainer">
+            <div id="chatBox"></div>
+            <input
+                id="messageInput"
+                type="text"
+                placeholder="Type your message..."
+            />
+            <button id="sendButton">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <!-- <script src="/socket.io/socket.io.js"></script> -->
+        <script src="/js/consultingRoom.js"></script>
+    </body>
+</html>
