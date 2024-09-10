@@ -52,6 +52,7 @@ async function saveConsultingRoomInfo({ roomId, roomInfo }) {
         console.log(roomInfo);
         await redisClient.hSet(`room:${roomId}`, {
             roomId: roomInfo.roomId,
+            consultingHistoryId: roomInfo.consultingHistoryId,
             date: roomInfo.date,
             customerId: roomInfo.customerId,
             customerName: roomInfo.customerName,
