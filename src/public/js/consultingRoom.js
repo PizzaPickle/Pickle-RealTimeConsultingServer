@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io('https://pickle.my/consulting-room');
 const myFace = document.getElementById('myFace');
 const sharedScreen = document.getElementById('sharedScreen');
 const peerFace = document.getElementById('peerFace');
