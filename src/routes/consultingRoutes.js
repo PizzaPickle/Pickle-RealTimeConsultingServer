@@ -6,8 +6,8 @@ import {
 
 const router = express.Router();
 
-router.get('/consulting-room', getRoomList);
-router.get('/consulting-room-test/:roomId', getConsultingRoom);
-router.get('/consulting-room/:roomId', getConsultingRoom);
+router.get('/consulting', getRoomList);
+router.get('/consulting/:roomId', getConsultingRoom);
+router.post('/consulting/:roomId', getConsultingRoomByPost);
 
 export default router;
