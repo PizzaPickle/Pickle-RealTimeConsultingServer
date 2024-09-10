@@ -1,9 +1,7 @@
 import { getRoomList as getRoomListFromRedis } from '../redis_client.js';
 export function getConsultingRoom(req, res) {
     const { roomId } = req.params;
-    const { userName, userId } = req.body;
-
-    console.log('디버깅');
+    const { userName, userId } = req.query;
 
     if (!roomId || !userName || !userId) {
         return res.status(400).json({ message: '모든 필드가 필요합니다.' });
@@ -12,7 +10,7 @@ export function getConsultingRoom(req, res) {
     console.log(roomId, userName, userId);
 
     try {
-        res.render('../views/session.ejs', { roomId, userName, userId });
+        res.render('session', { roomId, userName, userId });
     } catch (error) {
         console.error('View 렌더링 오류:', error);
         res.status(500).json({ message: '서버 오류가 발생했습니다.' });
