@@ -72,6 +72,7 @@ app.use(
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
+console.log(app.get('views'));
 // Routes
 // setupRoutes(app);
 
