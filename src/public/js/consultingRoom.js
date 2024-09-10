@@ -1,4 +1,4 @@
-const socket = io('http://pickle.my/consulting/:3000');
+let socket;
 const myFace = document.getElementById('myFace');
 const sharedScreen = document.getElementById('sharedScreen');
 const peerFace = document.getElementById('peerFace');
@@ -30,9 +30,20 @@ const { roomId, userId, userName } = window.ROOM_DATA;
 const roomTitle = document.getElementById('roomTitle');
 // 페이지 로드 시 자동으로 상담방 입장
 window.addEventListener('load', () => {
+    socket = io('http://pickle.my/consulting/');
     targetRoomId = roomId;
     joinConsultingRoom(roomId);
     roomTitle.innerHTML = `${userName}님의 상담룸`;
+    muteBtn.addEventListener('click', handleMuteClick); // 마이크 켜기/끄기 버튼 클릭 시
+    cameraBtn.addEventListener('click', handleCameraClick); // 카메라 켜기/끄기 버튼 클릭 시
+    sendBtn.addEventListener('click', handleSendClick); // 채팅 보내기 버튼 클릭 시
+    leaveRoomBtn.addEventListener('click', () => handleLeaveRoom(socket)); // 방 나가기 버튼 클릭 시
+    shareScreenBtn.addEventListener('click', handleShareClick); // 화면 공유 버튼 클릭 시
+    chatToggle.addEventListener('click', toggleChat); // 채팅 토글 버튼 클릭 시
+
+    targetRoomId = roomId; // 상담룸 ID 설정
+    joinConsultingRoom(roomId); // 상담룸 입장
+    roomTitle.innerHTML = `${userName}님의 상담룸`; // 방 제목 설정
 });
 
 const DEVICE_TYPES = {
