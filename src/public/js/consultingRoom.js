@@ -30,7 +30,9 @@ const { roomId, userId, userName } = window.ROOM_DATA;
 const roomTitle = document.getElementById('roomTitle');
 // 페이지 로드 시 자동으로 상담방 입장
 window.addEventListener('load', () => {
-    socket = io();
+    socket = io('http://pickle.my', {
+        withCredentials: true,
+    });
     targetRoomId = roomId;
     joinConsultingRoom(roomId);
     roomTitle.innerHTML = `${userName}님의 상담룸`;

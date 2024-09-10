@@ -26,7 +26,7 @@ const app = express();
 app.use(morgan('dev'));
 
 // Static files middleware (placed before other middlewares)
-app.use('static', express.static(join(__dirname, 'public')));
+app.use('/static', express.static(join(__dirname, 'public')));
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
