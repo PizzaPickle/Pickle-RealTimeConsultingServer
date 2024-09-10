@@ -50,7 +50,7 @@ app.use(
                     'https://cdn.socket.io',
                     "'unsafe-inline'",
                 ], // 추가
-                connectSrc: ["'self'", 'wss:', process.env.SOCKET_URL],
+                connectSrc: ["'self'", 'wss:'],
                 styleSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
                 fontSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
             },
