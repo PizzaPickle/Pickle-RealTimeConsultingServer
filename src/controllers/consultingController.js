@@ -12,7 +12,7 @@ export function getConsultingRoom(req, res) {
     console.log(roomId, userName, userId);
 
     try {
-        res.render('session', { roomId, userName, userId });
+        res.render('../views/session.ejs', { roomId, userName, userId });
     } catch (error) {
         console.error('View 렌더링 오류:', error);
         res.status(500).json({ message: '서버 오류가 발생했습니다.' });
