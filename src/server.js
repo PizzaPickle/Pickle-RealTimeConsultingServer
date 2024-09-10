@@ -73,9 +73,9 @@ app.use(
 );
 
 // Routes
-// setupRoutes(app);
+setupRoutes(app);
 
-app.use('/consulting-room/', consultingRoutes);
+// app.use('/consulting-room', consultingRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
