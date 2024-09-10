@@ -8,7 +8,13 @@ export function getConsultingRoom(req, res) {
     }
 
     console.log(roomId, userName, userId);
-    res.render('session', { roomId, userName, userId });
+
+    try {
+        res.render('session', { roomId, userName, userId });
+    } catch (error) {
+        console.error('View 렌더링 오류:', error);
+        res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+    }
 }
 
 export async function getRoomList(req, res) {
@@ -23,7 +29,7 @@ export async function getRoomList(req, res) {
             return res.status(404).json({ error: 'Room list not found' });
         }
 
-        res.json(roomList); // JSON 형식으로 응답 전송
+        res.json(roomList);
     } catch (error) {
         console.error('Error fetching room list:', error);
         res.status(500).json({ error: 'Failed to fetch room list' });
