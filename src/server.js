@@ -26,18 +26,18 @@ const app = express();
 app.use(morgan('dev'));
 
 // Static files middleware (placed before other middlewares)
-app.use(express.static(join(__dirname, 'public')));
+app.use('static', express.static(join(__dirname, 'public')));
 // View engine setup
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
 console.log(app.get('views'));
 // MIME type checking middleware
-app.use((req, res, next) => {
-    if (req.url.endsWith('.js')) {
-        res.type('application/javascript');
-    }
-    next();
-});
+// app.use((req, res, next) => {
+//     if (req.url.endsWith('.js')) {
+//         res.type('application/javascript');
+//     }
+//     next();
+// });
 
 // Security middleware
 app.use(
