@@ -18,6 +18,7 @@ html(lang="en")
         header 
             h1#roomTitle
         main 
+            p 방 ID #{roodId}
             div#call
                 div#videoContainer
                     video#sharedScreen(autoplay, playsinline)
@@ -41,4 +42,4 @@ html(lang="en")
             button#sendButton 
                 i.fas.fa-paper-plane
         //- script(src="/socket.io/socket.io.js")
-        script(src="/js/consultingRoom.js")
+    script(src="/js/consultingRoom.js")

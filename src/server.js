@@ -42,7 +42,11 @@ app.use(
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", 'https://cdn.socket.io'],
+                scriptSrc: [
+                    "'self'",
+                    'https://cdn.socket.io',
+                    "'unsafe-inline'",
+                ], // 추가
                 connectSrc: ["'self'", 'wss:'],
                 styleSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
                 fontSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
@@ -66,12 +70,12 @@ app.use(
 );
 
 // View engine setup
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
-
 // Routes
-setupRoutes(app);
-app.use('/consulting', consultingRoutes);
+// setupRoutes(app);
+
+app.use('/consulting-room/', consultingRoutes);
 
 // 404 handler
 app.use((req, res, next) => {
@@ -103,7 +107,7 @@ socketHandler(io);
 
 // Message queue setup
 setupMQ();
-
+console.log('Current directory:', __dirname);
 // Start server
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
