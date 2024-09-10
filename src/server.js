@@ -22,25 +22,41 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
-// Middleware
+// Logging middleware
+app.use(morgan('dev'));
+
+// Static files middleware (placed before other middlewares)
+app.use(express.static(join(__dirname, 'public')));
+
+// MIME type checking middleware
+app.use((req, res, next) => {
+    if (req.url.endsWith('.js')) {
+        res.type('application/javascript');
+    }
+    next();
+});
+
+// Security middleware
 app.use(
     helmet({
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: [
-                    "'self'",
-                    "'unsafe-inline'",
-                    'https://cdn.socket.io',
-                ],
+                scriptSrc: ["'self'", 'https://cdn.socket.io'],
                 connectSrc: ["'self'", 'wss:'],
+                styleSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
+                fontSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
             },
         },
     })
 );
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// Parse JSON bodies
 app.use(bodyParser.json());
+// Parse URL-encoded bodies
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// CORS middleware
 app.use(
     cors({
         origin: process.env.CORS_ORIGIN || 'https://pickle.my',
@@ -53,22 +69,23 @@ app.use(
 app.set('view engine', 'pug');
 app.set('views', join(__dirname, 'views'));
 
-// Static files
-app.use(express.static(join(__dirname, 'public')));
-
 // Routes
 setupRoutes(app);
 app.use('/consulting', consultingRoutes);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).render('error', { message: 'Something went wrong!' });
-});
-
 // 404 handler
 app.use((req, res, next) => {
     res.status(404).render('404', { message: 'Page not found' });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err.message);
+    console.error('Stack:', err.stack);
+    res.status(500).render('error', {
+        message: 'Something went wrong!',
+        error: process.env.NODE_ENV === 'development' ? err : {},
+    });
 });
 
 // Server setup
