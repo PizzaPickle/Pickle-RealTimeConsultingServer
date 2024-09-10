@@ -23,7 +23,21 @@ const __dirname = dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(helmet());
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                    'https://cdn.socket.io',
+                ],
+                connectSrc: ["'self'", 'wss:'],
+            },
+        },
+    })
+);
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
